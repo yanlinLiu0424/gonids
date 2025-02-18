@@ -2393,8 +2393,8 @@ func TestValidNetworks(t *testing.T) {
 	}
 }
 
-func TestXxx(t *testing.T) {
-	v := `alert ip any any -> any any (msg:"IPv4 header keyword example";tcp.flags:!S,CE;content:"sd"; sid:1; rev:1;)`
+func TestWindow(t *testing.T) {
+	v := `alert ip any any -> any any (msg:"IPv4 header keyword example";window:!5;content:"sd"; sid:1; rev:1;)`
 	r, err := ParseRule(v)
 	if err != nil {
 		t.Fatal(err)
