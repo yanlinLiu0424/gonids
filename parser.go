@@ -625,7 +625,7 @@ func (r *Rule) option(key item, l *lexer) error {
 		"asn1"}, tcpKeyWords...)):
 		nextItem := l.nextItem()
 
-		if nextItem.typ != itemOptionValue && !inSlice(key.value, []string{"tos", "fragbits", "tcp.flags"}) /*withe not possible*/ {
+		if nextItem.typ != itemOptionValue && !inSlice(key.value, []string{"tos", "fragbits", "tcp.flags", "window"}) /*withe not possible*/ {
 			return fmt.Errorf("no valid value for %s tag", key.value)
 		}
 		if r.Tags == nil {
