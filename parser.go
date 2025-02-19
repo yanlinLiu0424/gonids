@@ -151,7 +151,7 @@ func parseLenMatch(k lenMatchType, s string) (*LenMatch, error) {
 	m.Kind = k
 	switch {
 	// Simple case, no operators.
-	case !strings.ContainsAny(s, "><"):
+	case !strings.ContainsAny(s, "><-"):
 		// Ignore options after ','.
 		numTmp := strings.Split(s, ",")[0]
 		num, err := strconv.Atoi(strings.TrimSpace(numTmp))
@@ -174,9 +174,14 @@ func parseLenMatch(k lenMatchType, s string) (*LenMatch, error) {
 		m.Num = num
 
 	// Min/Max center operator.
-	case strings.Contains(s, "<>"):
-		m.Operator = "<>"
-		parts := strings.Split(s, "<>")
+	case strings.Contains(s, "<>"), strings.Contains(s, "-"):
+		switch {
+		case strings.Contains(s, "<>"):
+			m.Operator = "<>"
+		case strings.Contains(s, "-"):
+			m.Operator = "-"
+		}
+		parts := strings.Split(s, m.Operator)
 		if len(parts) != 2 {
 			return nil, fmt.Errorf("must have exactly 2 parts for min/max operator. got %d", len(parts))
 		}

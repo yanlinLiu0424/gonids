@@ -453,6 +453,7 @@ const (
 	ipID
 	tcpSeq
 	tcpACK
+	tcpMss
 	bSize
 )
 
@@ -469,6 +470,7 @@ var lenMatchTypeVals = map[lenMatchType]string{
 	tcpSeq: "seq",
 	tcpACK: "ack",
 	bSize:  "bsize",
+	tcpMss: "tcp.mss",
 }
 
 // allLenMatchTypeNames returns a slice of string containing all length match keywords.
