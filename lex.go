@@ -363,6 +363,10 @@ func lexOptionKey(l *lexer) stateFn {
 				l.emit(itemOptionKey, true)
 			}
 			l.skipNext()
+			s := strings.TrimRight(l.input, " ")
+			if len(s) != l.pos {
+				return l.unexpectedEOF()
+			}
 			return lexRuleEnd
 		case eof:
 			return l.unexpectedEOF()
