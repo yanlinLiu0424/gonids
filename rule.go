@@ -212,6 +212,9 @@ const (
 	ipv6hdr
 	//tcp Sticky Buffers
 	tcphdr
+
+	//udp Sticky Buffers
+	udphdr
 )
 
 // Contains both Suricata 4.x and 5.0 buffers. Some day we'll deprecate the 4.x ones.
@@ -310,6 +313,9 @@ var stickyBuffers = map[DataPos]string{
 
 	//tcp header
 	tcphdr: "tcp.hdr",
+
+	//udp header
+	udphdr: "udp.hdr",
 }
 
 func (d DataPos) String() string {
