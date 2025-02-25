@@ -365,7 +365,7 @@ func lexOptionKey(l *lexer) stateFn {
 			l.skipNext()
 			s := strings.TrimRight(l.input, " ")
 			if len(s) != l.pos {
-				return l.errorf("invalid character %s at end of rule", s[l.pos:])
+				return l.errorf("only one rule can allow at a time%v", "")
 			}
 			return lexRuleEnd
 		case eof:
