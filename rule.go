@@ -215,6 +215,10 @@ const (
 
 	//udp Sticky Buffers
 	udphdr
+	//icmpv4 Sticky Buffers
+	icmpv4hdr
+	//icmpv6 Sticky Buffers
+	icmpv6hdr
 )
 
 // Contains both Suricata 4.x and 5.0 buffers. Some day we'll deprecate the 4.x ones.
@@ -316,6 +320,11 @@ var stickyBuffers = map[DataPos]string{
 
 	//udp header
 	udphdr: "udp.hdr",
+	//icmpv4 header
+	icmpv4hdr: "icmpv4.hdr",
+
+	//icmpv4 header
+	icmpv6hdr: "icmpv6.hdr",
 }
 
 func (d DataPos) String() string {
@@ -466,22 +475,24 @@ const (
 	tcpACK
 	tcpMss
 	bSize
+	icmpv6mtu
 )
 
 // lenMatchTypeVals map len types to string representations.
 var lenMatchTypeVals = map[lenMatchType]string{
-	iType:  "itype",
-	iCode:  "icode",
-	iID:    "icmp_id",
-	iSeq:   "icmp_seq",
-	uriLen: "urilen",
-	dSize:  "dsize",
-	ipTTL:  "ttl",
-	ipID:   "id",
-	tcpSeq: "seq",
-	tcpACK: "ack",
-	bSize:  "bsize",
-	tcpMss: "tcp.mss",
+	iType:     "itype",
+	iCode:     "icode",
+	iID:       "icmp_id",
+	iSeq:      "icmp_seq",
+	uriLen:    "urilen",
+	dSize:     "dsize",
+	ipTTL:     "ttl",
+	ipID:      "id",
+	tcpSeq:    "seq",
+	tcpACK:    "ack",
+	bSize:     "bsize",
+	tcpMss:    "tcp.mss",
+	icmpv6mtu: "icmpv6.mtu",
 }
 
 // allLenMatchTypeNames returns a slice of string containing all length match keywords.

@@ -2393,8 +2393,8 @@ func TestValidNetworks(t *testing.T) {
 	}
 }
 
-func TestWindow(t *testing.T) {
-	v := `alert ip any any -> any any (msg:"IPv4 header keyword example";udp.hdr;content:!"sd";offset:10; sid:1; rev:1;)`
+func Test(t *testing.T) {
+	v := `alert tcp any any -> [192.168.1.100,192.168.1.101] any (msg:"C2 server communication detected";icmpv6.mtu:>20; sid:2007;)`
 	r, err := ParseRule(v)
 	if err != nil {
 		t.Fatal(err)
