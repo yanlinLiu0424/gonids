@@ -327,6 +327,11 @@ var stickyBuffers = map[DataPos]string{
 	icmpv6hdr: "icmpv6.hdr",
 }
 
+type Absent struct {
+	Enabled bool
+	Or_else bool
+}
+
 func (d DataPos) String() string {
 	return stickyBuffers[d]
 }
@@ -358,6 +363,8 @@ type Content struct {
 	Pattern []byte
 	// Negate is true for negated content match.
 	Negate bool
+	// absent
+	Absent Absent
 	// Options are the option associated to the content (e.g. http_header).
 	Options []*ContentOption
 }
