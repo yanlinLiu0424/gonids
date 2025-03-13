@@ -611,11 +611,12 @@ func (r *Rule) direction(key item, l *lexer) error {
 	return nil
 }
 
-var dataPosition = pktData
+var dataPosition = PayloadData
 
 var absent = Absent{
-	Enabled: false,
-	Or_else: false,
+	DataPosition: dataPosition,
+	Enabled:      false,
+	Or_else:      false,
 }
 
 // option decodes an IDS rule option based on its key.
@@ -731,17 +732,17 @@ func (r *Rule) option(key item, l *lexer) error {
 		}
 		dataPosition = d
 	case key.value == "absent":
-		a := Absent{}
-		a.Enabled = true
+		absent.Enabled = true
+		absent.DataPosition = dataPosition
 		nextItem := l.nextItem()
 		if nextItem.typ == itemOptionValue {
 			if nextItem.value == "or_else" {
-				a.Or_else = true
+				absent.Or_else = true
 			} else {
 				return fmt.Errorf("invalid absent %s", nextItem.value)
 			}
 		}
-		absent = a
+		r.Absent = &absent
 	case inSlice(key.value, []string{"content", "uricontent"}):
 		nextItem := l.nextItem()
 		negate := false
@@ -763,7 +764,6 @@ func (r *Rule) option(key item, l *lexer) error {
 				Pattern:      c,
 				Negate:       negate,
 				Options:      options,
-				Absent:       absent,
 			}
 			r.Matchers = append(r.Matchers, con)
 		} else {
@@ -943,7 +943,7 @@ func parseRuleAux(rule string, commented bool) (*Rule, error) {
 		return nil, err
 	}
 	defer l.close()
-	dataPosition = pktData
+	dataPosition = PayloadData
 	r := &Rule{}
 	var unsupportedOptions = make([]string, 0, 3)
 	for item := l.nextItem(); item.typ != itemEOR && item.typ != itemEOF && err == nil; item = l.nextItem() {
