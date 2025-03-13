@@ -64,6 +64,8 @@ type Rule struct {
 	// Matchers are internally used to ensure relative matches are printed correctly.
 	// Make this private before checkin?
 	Matchers []orderedMatcher
+	//absent
+	Absent *Absent
 }
 
 type orderedMatcher interface {
@@ -115,7 +117,7 @@ type Network struct {
 type DataPos int
 
 const (
-	pktData DataPos = iota
+	PayloadData DataPos = iota
 	fileData
 	base64Data
 	//
@@ -223,9 +225,9 @@ const (
 
 // Contains both Suricata 4.x and 5.0 buffers. Some day we'll deprecate the 4.x ones.
 var stickyBuffers = map[DataPos]string{
-	pktData:    "pkt_data",
-	fileData:   "file_data",
-	base64Data: "base64_data",
+	PayloadData: "payload_data",
+	fileData:    "file_data",
+	base64Data:  "base64_data",
 	// Suricata 4.X Sticky Buffers
 	// HTTP Sticky Buffers
 	httpAcceptEnc:    "http_accept_enc",
@@ -328,8 +330,9 @@ var stickyBuffers = map[DataPos]string{
 }
 
 type Absent struct {
-	Enabled bool
-	Or_else bool
+	DataPosition DataPos
+	Enabled      bool
+	Or_else      bool
 }
 
 func (d DataPos) String() string {
@@ -343,7 +346,7 @@ func StickyBuffer(s string) (DataPos, error) {
 			return k, nil
 		}
 	}
-	return pktData, fmt.Errorf("%s is not a sticky buffer", s)
+	return PayloadData, fmt.Errorf("%s is not a sticky buffer", s)
 }
 
 // isStickyBuffer returns true if the provided string is a known sticky buffer.
@@ -364,7 +367,6 @@ type Content struct {
 	// Negate is true for negated content match.
 	Negate bool
 	// absent
-	Absent Absent
 	// Options are the option associated to the content (e.g. http_header).
 	Options []*ContentOption
 }
@@ -949,7 +951,7 @@ func (r Rule) String() string {
 
 	// Write out matchers in order (because things can be relative.)
 	if len(r.Matchers) > 0 {
-		d := pktData
+		d := PayloadData
 		for _, m := range r.Matchers {
 			if c, ok := m.(*Content); ok {
 				if d != c.DataPosition {

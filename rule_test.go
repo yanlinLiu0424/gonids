@@ -1127,7 +1127,7 @@ func TestRuleString(t *testing.T) {
 						Pattern:      []byte("POST"),
 					},
 					&PCRE{
-						DataPosition: pktData,
+						DataPosition: PayloadData,
 						Pattern:      []byte("foo.*bar"),
 						Options:      []byte("i"),
 					},
@@ -1206,7 +1206,7 @@ func TestDataPosString(t *testing.T) {
 		want string
 	}{
 		{
-			val:  pktData,
+			val:  PayloadData,
 			want: "pkt_data",
 		},
 		{
@@ -1258,12 +1258,12 @@ func TestStickyBuffer(t *testing.T) {
 	}{
 		{
 			s:       "pkt_data",
-			want:    pktData,
+			want:    PayloadData,
 			wantErr: false,
 		},
 		{
 			s:       "foobarbaz",
-			want:    pktData,
+			want:    PayloadData,
 			wantErr: true,
 		},
 		{
