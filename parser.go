@@ -613,12 +613,6 @@ func (r *Rule) direction(key item, l *lexer) error {
 
 var dataPosition = PayloadData
 
-var absent = Absent{
-	DataPosition: dataPosition,
-	Enabled:      false,
-	Or_else:      false,
-}
-
 // option decodes an IDS rule option based on its key.
 func (r *Rule) option(key item, l *lexer) error {
 	if key.typ != itemOptionKey {
@@ -732,6 +726,7 @@ func (r *Rule) option(key item, l *lexer) error {
 		}
 		dataPosition = d
 	case key.value == "absent":
+		absent := &Absent{}
 		absent.Enabled = true
 		absent.DataPosition = dataPosition
 		nextItem := l.nextItem()
@@ -742,7 +737,7 @@ func (r *Rule) option(key item, l *lexer) error {
 				return fmt.Errorf("invalid absent %s", nextItem.value)
 			}
 		}
-		r.Absent = &absent
+		r.Absent = absent
 	case inSlice(key.value, []string{"content", "uricontent"}):
 		nextItem := l.nextItem()
 		negate := false
@@ -758,6 +753,11 @@ func (r *Rule) option(key item, l *lexer) error {
 			var options []*ContentOption
 			if key.value == "uricontent" {
 				options = append(options, &ContentOption{Name: "http_uri"})
+			}
+			if r.Absent != nil {
+				if !r.Absent.Or_else {
+					return fmt.Errorf("absent should have or_else if content existed")
+				}
 			}
 			con := &Content{
 				DataPosition: dataPosition,
