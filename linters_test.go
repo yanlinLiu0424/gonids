@@ -44,7 +44,7 @@ func TestShouldBeHTTP(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AA"),
 						Options: []*ContentOption{
@@ -67,7 +67,7 @@ func TestShouldBeHTTP(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						DataPosition: httpProtocol,
 						Pattern:      []byte("AA"),
@@ -102,7 +102,7 @@ func TestExpensivePCRE(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AAAAAAAAAA"),
 						Options: []*ContentOption{
@@ -125,7 +125,7 @@ func TestExpensivePCRE(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&PCRE{
 						Pattern: []byte("f.*bar"),
 					},
@@ -145,7 +145,7 @@ func TestExpensivePCRE(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AA"),
 						Options: []*ContentOption{
@@ -171,7 +171,7 @@ func TestExpensivePCRE(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("POST"),
 						Options: []*ContentOption{
@@ -197,7 +197,7 @@ func TestExpensivePCRE(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("ReallyLongThing"),
 						Options: []*ContentOption{
@@ -223,7 +223,7 @@ func TestExpensivePCRE(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("\r\nUser-Agent: "),
 						Options: []*ContentOption{
@@ -249,7 +249,7 @@ func TestExpensivePCRE(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("\r\nUser-Agent: "),
 						Options: []*ContentOption{
@@ -292,7 +292,7 @@ func TestSnortHTTPHeader(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AAAAAAAAAA\r\n\r\n"),
 						Options: []*ContentOption{
@@ -315,7 +315,7 @@ func TestSnortHTTPHeader(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("BBBBBB"),
 						Options: []*ContentOption{
@@ -344,7 +344,7 @@ func TestSnortHTTPHeader(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("BBBBBB"),
 						Options: []*ContentOption{
@@ -367,7 +367,7 @@ func TestSnortHTTPHeader(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("BBBBBB\r\n"),
 						Options: []*ContentOption{
@@ -444,7 +444,7 @@ func TestOnlyShortContents(t *testing.T) {
 		{
 			name: "long enough content",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AAAAAAAAAA\r\n\r\n"),
 					},
@@ -455,7 +455,7 @@ func TestOnlyShortContents(t *testing.T) {
 		{
 			name: "one long one short",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AAAAAAAAAA\r\n\r\n"),
 					},
@@ -469,7 +469,7 @@ func TestOnlyShortContents(t *testing.T) {
 		{
 			name: "short content",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AAAA"),
 					},
@@ -480,7 +480,7 @@ func TestOnlyShortContents(t *testing.T) {
 		{
 			name: "short content and non-content",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AAAA"),
 					},

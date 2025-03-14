@@ -63,12 +63,12 @@ type Rule struct {
 	Flowints []*Flowint
 	// Matchers are internally used to ensure relative matches are printed correctly.
 	// Make this private before checkin?
-	Matchers []orderedMatcher
+	Matchers []OrderedMatcher
 	//absent
 	Absent *Absent
 }
 
-type orderedMatcher interface {
+type OrderedMatcher interface {
 	String() string
 }
 
@@ -1063,7 +1063,7 @@ func (c *Content) FormatPattern() string {
 }
 
 // InsertMatcher will insert an ordered matcher at a position specified.
-func (r *Rule) InsertMatcher(m orderedMatcher, pos int) error {
+func (r *Rule) InsertMatcher(m OrderedMatcher, pos int) error {
 	if pos < 0 {
 		return fmt.Errorf("cannot insert matcher, position %d < 0", pos)
 	}

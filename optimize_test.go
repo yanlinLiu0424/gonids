@@ -47,7 +47,7 @@ func TestOptimizeHTTP(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AA"),
 						Options: []*ContentOption{
@@ -66,7 +66,7 @@ func TestOptimizeHTTP(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"any"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AA"),
 						Options: []*ContentOption{
@@ -95,7 +95,7 @@ func TestOptimizeHTTP(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"$HTTP_PORTS"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						DataPosition: httpProtocol,
 						Pattern:      []byte("AA"),
@@ -112,7 +112,7 @@ func TestOptimizeHTTP(t *testing.T) {
 					Nets:  []string{"$EXTERNAL_NET"},
 					Ports: []string{"any"},
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						DataPosition: httpProtocol,
 						Pattern:      []byte("AA"),
@@ -151,7 +151,7 @@ func TestSnortURILenFix(t *testing.T) {
 		{
 			name: "urilen exact raw",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&LenMatch{
 						Kind:    uriLen,
 						Num:     3,
@@ -164,7 +164,7 @@ func TestSnortURILenFix(t *testing.T) {
 		{
 			name: "urilen exact norm",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&LenMatch{
 						Kind:    uriLen,
 						Num:     3,
@@ -177,7 +177,7 @@ func TestSnortURILenFix(t *testing.T) {
 		{
 			name: "urilen range",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&LenMatch{
 						Kind:     uriLen,
 						Min:      3,
@@ -187,7 +187,7 @@ func TestSnortURILenFix(t *testing.T) {
 				},
 			},
 			output: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&LenMatch{
 						Kind:     uriLen,
 						Min:      2,
@@ -207,7 +207,7 @@ func TestSnortURILenFix(t *testing.T) {
 		{
 			name: "urilen exact",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&LenMatch{
 						Kind: uriLen,
 						Num:  3,
@@ -215,7 +215,7 @@ func TestSnortURILenFix(t *testing.T) {
 				},
 			},
 			output: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&LenMatch{
 						Kind:    uriLen,
 						Num:     3,
@@ -233,7 +233,7 @@ func TestSnortURILenFix(t *testing.T) {
 		{
 			name: "urilen range norm",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&LenMatch{
 						Kind:     uriLen,
 						Min:      3,
@@ -244,7 +244,7 @@ func TestSnortURILenFix(t *testing.T) {
 				},
 			},
 			output: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&LenMatch{
 						Kind:     uriLen,
 						Min:      2,
@@ -285,7 +285,7 @@ func TestSnortHTTPHeaderFix(t *testing.T) {
 		{
 			name: "basic test",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foobar\r\n\r\n"),
 						Options: []*ContentOption{
@@ -295,7 +295,7 @@ func TestSnortHTTPHeaderFix(t *testing.T) {
 				},
 			},
 			output: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foobar\r\n"),
 						Options: []*ContentOption{
@@ -320,7 +320,7 @@ func TestSnortHTTPHeaderFix(t *testing.T) {
 		{
 			name: "insert middle",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 						Options: []*ContentOption{
@@ -342,7 +342,7 @@ func TestSnortHTTPHeaderFix(t *testing.T) {
 				},
 			},
 			output: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 						Options: []*ContentOption{
@@ -400,7 +400,7 @@ func TestUpgradeToSuri5(t *testing.T) {
 		{
 			name: "content modifier",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("/foo.php"),
 						Options: []*ContentOption{
@@ -416,7 +416,7 @@ func TestUpgradeToSuri5(t *testing.T) {
 				},
 			},
 			output: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						DataPosition: httpURI,
 						Pattern:      []byte("/foo.php"),
@@ -438,7 +438,7 @@ func TestUpgradeToSuri5(t *testing.T) {
 		{
 			name: "old sticky buffer",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						DataPosition: httpRequestLine,
 						Pattern:      []byte("foo.php"),
@@ -446,7 +446,7 @@ func TestUpgradeToSuri5(t *testing.T) {
 				},
 			},
 			output: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						DataPosition: httpRequestLine5,
 						Pattern:      []byte("foo.php"),
@@ -464,7 +464,7 @@ func TestUpgradeToSuri5(t *testing.T) {
 		{
 			name: "old sticky buffer",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("/foo.php"),
 						Options: []*ContentOption{
@@ -485,7 +485,7 @@ func TestUpgradeToSuri5(t *testing.T) {
 				},
 			},
 			output: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						DataPosition: httpURI,
 						Pattern:      []byte("/foo.php"),

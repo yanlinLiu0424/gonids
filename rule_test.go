@@ -834,7 +834,7 @@ func TestRuleString(t *testing.T) {
 				SID:         1337,
 				Revision:    2,
 				Description: "foo",
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AA"),
 					},
@@ -858,7 +858,7 @@ func TestRuleString(t *testing.T) {
 				SID:         1337,
 				Revision:    2,
 				Description: "foo",
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AA"),
 					},
@@ -886,7 +886,7 @@ func TestRuleString(t *testing.T) {
 				SID:         1337,
 				Revision:    2,
 				Description: "foo",
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AA"),
 					},
@@ -911,7 +911,7 @@ func TestRuleString(t *testing.T) {
 				SID:         1337,
 				Revision:    2,
 				Description: "foo",
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AA"),
 					},
@@ -942,7 +942,7 @@ func TestRuleString(t *testing.T) {
 				Tags: map[string]string{
 					"classtype": "trojan-activity",
 				},
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("AA"),
 					},
@@ -1058,7 +1058,7 @@ func TestRuleString(t *testing.T) {
 				SID:         1234,
 				Revision:    2,
 				Description: "new sticky buffers",
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						DataPosition: httpMethod,
 						Pattern:      []byte("POST"),
@@ -1092,7 +1092,7 @@ func TestRuleString(t *testing.T) {
 				SID:         1234,
 				Revision:    2,
 				Description: "grouped network bits",
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						DataPosition: httpMethod,
 						Pattern:      []byte("POST"),
@@ -1121,7 +1121,7 @@ func TestRuleString(t *testing.T) {
 				SID:         1234,
 				Revision:    2,
 				Description: "pcre new sticky buffer",
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						DataPosition: httpMethod,
 						Pattern:      []byte("POST"),
@@ -1293,7 +1293,7 @@ func TestHasVar(t *testing.T) {
 		{
 			name: "has var",
 			r: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&ByteMatch{
 						Variable: "foovar",
 					},
@@ -1305,7 +1305,7 @@ func TestHasVar(t *testing.T) {
 		{
 			name: "has var",
 			r: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&ByteMatch{
 						Variable: "barvar",
 					},
@@ -1333,7 +1333,7 @@ func TestInsertMatcher(t *testing.T) {
 	for _, tt := range []struct {
 		name    string
 		input   *Rule
-		matcher orderedMatcher
+		matcher OrderedMatcher
 		pos     int
 		want    *Rule
 		wantErr bool
@@ -1341,7 +1341,7 @@ func TestInsertMatcher(t *testing.T) {
 		{
 			name: "basic test",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
@@ -1352,7 +1352,7 @@ func TestInsertMatcher(t *testing.T) {
 			},
 			pos: 0,
 			want: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("bar"),
 					},
@@ -1366,7 +1366,7 @@ func TestInsertMatcher(t *testing.T) {
 		{
 			name: "insert end",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
@@ -1377,7 +1377,7 @@ func TestInsertMatcher(t *testing.T) {
 			},
 			pos: 1,
 			want: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
@@ -1391,7 +1391,7 @@ func TestInsertMatcher(t *testing.T) {
 		{
 			name: "insert middle",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
@@ -1405,7 +1405,7 @@ func TestInsertMatcher(t *testing.T) {
 			},
 			pos: 1,
 			want: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
@@ -1422,7 +1422,7 @@ func TestInsertMatcher(t *testing.T) {
 		{
 			name: "insert different type",
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
@@ -1438,7 +1438,7 @@ func TestInsertMatcher(t *testing.T) {
 			},
 			pos: 1,
 			want: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
@@ -1458,7 +1458,7 @@ func TestInsertMatcher(t *testing.T) {
 			name: "index too small",
 
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
@@ -1469,7 +1469,7 @@ func TestInsertMatcher(t *testing.T) {
 			},
 			pos: -1,
 			want: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
@@ -1481,7 +1481,7 @@ func TestInsertMatcher(t *testing.T) {
 			name: "index too large",
 
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
@@ -1492,7 +1492,7 @@ func TestInsertMatcher(t *testing.T) {
 			},
 			pos: 4,
 			want: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
@@ -1504,7 +1504,7 @@ func TestInsertMatcher(t *testing.T) {
 			name: "effectively append",
 
 			input: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
@@ -1515,7 +1515,7 @@ func TestInsertMatcher(t *testing.T) {
 			},
 			pos: 1,
 			want: &Rule{
-				Matchers: []orderedMatcher{
+				Matchers: []OrderedMatcher{
 					&Content{
 						Pattern: []byte("foo"),
 					},
