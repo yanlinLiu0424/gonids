@@ -164,7 +164,7 @@ func parseLenMatch(k lenMatchType, s string) (*LenMatch, error) {
 		if strings.HasPrefix(s, ">=") || strings.HasPrefix(s, "<=") {
 			m.Operator = s[0:2]
 			numTmp = strings.TrimLeft(s, ">=")
-			numTmp = strings.TrimLeft(s, "<=")
+			numTmp = strings.TrimLeft(numTmp, "<=")
 		} else {
 			m.Operator = s[0:1]
 			// Strip leading < or >.
