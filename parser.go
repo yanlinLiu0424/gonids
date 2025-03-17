@@ -906,6 +906,10 @@ func (r *Rule) option(key item, l *lexer) error {
 			return fmt.Errorf("%s is not a support lenMatch keyword", key.value)
 		}
 		nextItem := l.nextItem()
+		if nextItem.typ == itemNot {
+			nextItem = l.nextItem()
+			nextItem.value = "!" + nextItem.value
+		}
 		m, err := parseLenMatch(k, nextItem.value)
 		if err != nil {
 			return fmt.Errorf("could not parse LenMatch: %v", err)
