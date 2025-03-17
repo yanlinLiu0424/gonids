@@ -160,9 +160,16 @@ func parseLenMatch(k lenMatchType, s string) (*LenMatch, error) {
 
 	// Leading operator, single number.
 	case strings.HasPrefix(s, ">") || strings.HasPrefix(s, "<"):
-		m.Operator = s[0:1]
-		// Strip leading < or >.
-		numTmp := strings.TrimLeft(s, "><")
+		var numTmp string
+		if strings.HasPrefix(s, ">=") || strings.HasPrefix(s, "<=") {
+			m.Operator = s[0:2]
+			numTmp = strings.TrimLeft(s, ">=")
+			numTmp = strings.TrimLeft(s, "<=")
+		} else {
+			m.Operator = s[0:1]
+			// Strip leading < or >.
+			numTmp = strings.TrimLeft(s, "><")
+		}
 		// Ignore options after ','.
 		numTmp = strings.Split(numTmp, ",")[0]
 		num, err := strconv.Atoi(strings.TrimSpace(numTmp))
