@@ -149,7 +149,7 @@ func parseLenMatch(k lenMatchType, s string) (*LenMatch, error) {
 	m.Kind = k
 	switch {
 	// Simple case, no operators.
-	case !strings.ContainsAny(s, "><-"):
+	case !strings.ContainsAny(s, "><-!"):
 		// Ignore options after ','.
 		numTmp := strings.Split(s, ",")[0]
 		num, err := strconv.Atoi(strings.TrimSpace(numTmp))
@@ -177,7 +177,15 @@ func parseLenMatch(k lenMatchType, s string) (*LenMatch, error) {
 			return nil, fmt.Errorf("%v is not an integer", s)
 		}
 		m.Num = num
-
+	case strings.HasPrefix(s, "!"):
+		m.Operator = s[0:1]
+		numTmp := strings.TrimLeft(s, "!")
+		numTmp = strings.Split(numTmp, ",")[0]
+		num, err := strconv.Atoi(strings.TrimSpace(numTmp))
+		if err != nil {
+			return nil, fmt.Errorf("%v is not an integer", s)
+		}
+		m.Num = num
 	// Min/Max center operator.
 	case strings.Contains(s, "<>"), strings.Contains(s, "-"):
 		switch {
