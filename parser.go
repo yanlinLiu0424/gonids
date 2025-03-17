@@ -204,6 +204,8 @@ func parseLenMatch(k lenMatchType, s string) (*LenMatch, error) {
 		// Do stuff to handle options here.
 		m.Min = min
 		m.Max = max
+	default:
+		return nil, fmt.Errorf("unknown operator: %v", s)
 	}
 
 	// Parse options:
