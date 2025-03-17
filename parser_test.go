@@ -229,6 +229,16 @@ func TestParseLenMatch(t *testing.T) {
 				Operator: "<=",
 			},
 		},
+		{
+			name:  "! dsize",
+			input: "!20",
+			kind:  bSize,
+			want: &LenMatch{
+				Kind:     bSize,
+				Num:      20,
+				Operator: "!",
+			},
+		},
 	} {
 		got, err := parseLenMatch(tt.kind, tt.input)
 		diff := pretty.Compare(got, tt.want)
