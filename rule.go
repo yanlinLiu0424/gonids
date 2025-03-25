@@ -381,6 +381,7 @@ const (
 	bJump
 	isDataAt
 	b64Decode
+	bMath
 )
 
 var byteMatchTypeVals = map[byteMatchType]string{
@@ -389,6 +390,7 @@ var byteMatchTypeVals = map[byteMatchType]string{
 	bTest:     "byte_test",
 	isDataAt:  "isdataat",
 	b64Decode: "base64_decode",
+	bMath:     "byte_math",
 }
 
 // allbyteMatchTypeNames returns a slice of valid byte_* keywords.
@@ -440,6 +442,8 @@ func (b byteMatchType) minLen() int {
 		return 1
 	case b64Decode:
 		return 0
+	case bMath:
+		return 5
 	}
 	return -1
 }

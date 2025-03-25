@@ -268,9 +268,9 @@ func parseByteMatch(k byteMatchType, s string) (*ByteMatch, error) {
 	if len(parts) < 1 {
 		return nil, fmt.Errorf("%s keyword has %d parts", s, len(parts))
 	}
-
-	b.NumBytes = strings.TrimSpace(parts[0])
-
+	if k != bMath {
+		b.NumBytes = strings.TrimSpace(parts[0])
+	}
 	if len(parts) < b.Kind.minLen() {
 		return nil, fmt.Errorf("invalid %s length: %d", b.Kind, len(parts))
 	}
@@ -302,7 +302,49 @@ func parseByteMatch(k byteMatchType, s string) (*ByteMatch, error) {
 		}
 		b.Offset = offset
 	}
+	if k == bMath {
+		for _, v := range parts {
+			v = strings.TrimSpace(v)
+			switch {
+			case strings.HasPrefix(v, "bytes"):
+				v := strings.Split(v, " ")
+				if len(v) != 2 {
+					return nil, fmt.Errorf(" incorrect format for bytes")
+				}
+				b.NumBytes = v[1]
+			case strings.HasPrefix(v, "offset"):
+				v := strings.Split(v, " ")
+				if len(v) != 2 {
+					return nil, fmt.Errorf("incorrect format for offset")
+				}
+				n, err := strconv.Atoi(v[1])
+				if err != nil {
+					return nil, err
+				}
+				b.Offset = n
+			case strings.HasPrefix(v, "oper"):
+				v := strings.Split(v, " ")
+				if len(v) != 2 {
+					return nil, fmt.Errorf("incorrect format for oper")
+				}
+				b.Operator = v[1]
+			case strings.HasPrefix(v, "rvalue"):
+				v := strings.Split(v, " ")
+				if len(v) != 2 {
+					return nil, fmt.Errorf("incorrect format for rvalue")
+				}
+				b.Value = v[1]
+			case strings.HasPrefix(v, "result"):
+				v := strings.Split(v, " ")
+				if len(v) != 2 {
+					return nil, fmt.Errorf("incorrect format for result")
+				}
+				b.Variable = v[1]
 
+			}
+		}
+
+	}
 	// The rest of the options, for all types not b64decode
 	for i, l := b.Kind.minLen(), len(parts); i < l; i++ {
 		parts[i] = strings.TrimSpace(parts[i])
