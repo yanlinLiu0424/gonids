@@ -81,7 +81,7 @@ func TestParseLenMatch(t *testing.T) {
 		want    *LenMatch
 		wantErr bool
 	}{
-		/*{
+		{
 			name:  "basic num",
 			input: "6",
 			kind:  uriLen,
@@ -228,7 +228,7 @@ func TestParseLenMatch(t *testing.T) {
 				Num:      20,
 				Operator: "<=",
 			},
-		},*/
+		},
 		{
 			name:  "! dsize",
 			input: "!20",
@@ -308,6 +308,34 @@ func TestParseByteMatch(t *testing.T) {
 				Operator: "=",
 				Offset:   0,
 				Value:    "0x01",
+			},
+		},
+
+		{
+			name:  "basic byte_math",
+			input: "bytes 4, offset 0, oper +, rvalue 248, result var",
+			kind:  bMath,
+			want: &ByteMatch{
+				Kind:     bMath,
+				NumBytes: "4",
+				Operator: "+",
+				Offset:   0,
+				Value:    "248",
+				Variable: "var",
+			},
+		},
+		{
+			name:  "basic byte_math  with options",
+			input: "bytes 4, offset 10, oper +, rvalue 248, result var,relative,endian big,dce",
+			kind:  bMath,
+			want: &ByteMatch{
+				Kind:     bMath,
+				NumBytes: "4",
+				Operator: "+",
+				Offset:   10,
+				Value:    "248",
+				Variable: "var",
+				Options:  []string{"relative", "endian big", "dce"},
 			},
 		},
 		{
@@ -2424,7 +2452,8 @@ func TestValidNetworks(t *testing.T) {
 }
 
 func Test(t *testing.T) {
-	v := `alert tcp any any -> [192.168.1.100,192.168.1.101] any (msg:"C2 server communication detected";content:"abc";isdataat:512;bsize:!10;sid:2007;)`
+	v := `alert tcp any any -> [192.168.1.100,192.168.1.101] any (msg:"C2 server communication detected";content:"XYZ"; content:"_klm_"; distance:0; content:"abcd";
+			 distance:4;byte_math:bytes 4, offset 0, oper +, rvalue 248, result var, relative;sid:1;)`
 	r, err := ParseRule(v)
 	if err != nil {
 		t.Fatal(err)
