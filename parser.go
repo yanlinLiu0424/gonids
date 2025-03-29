@@ -296,11 +296,13 @@ func parseByteMatch(k byteMatchType, s string) (*ByteMatch, error) {
 		// Parse value. Can use a variable.
 		b.Value = strings.TrimSpace(parts[2])
 		// Parse offset.
-		offset, err := strconv.Atoi(strings.TrimSpace(parts[3]))
+		/*offset, err := strconv.Atoi(strings.TrimSpace(parts[3]))
 		if err != nil {
 			return nil, fmt.Errorf("%s offset is not an int: %v; %s", b.Kind, parts[1], err)
 		}
-		b.Offset = offset
+		b.Offset = offset*/
+		b.Options = append(b.Options, fmt.Sprintf("offset %v", parts[3]))
+
 	}
 	if k == bMath {
 		for _, v := range parts {
@@ -684,10 +686,10 @@ func (r *Rule) option(key item, l *lexer) error {
 		"window",
 		"threshold", "detection_filter",
 		"dce_iface", "dce_opnum", "dce_stub_data",
-		"asn1", "tcp.flags"}):
+		"asn1", "tcp.flags", "absent"}):
 		nextItem := l.nextItem()
 
-		if nextItem.typ != itemOptionValue && !inSlice(key.value, []string{"tos", "fragbits", "tcp.flags", "window"}) /*withe not possible*/ {
+		if nextItem.typ != itemOptionValue && !inSlice(key.value, []string{"tos", "fragbits", "tcp.flags", "window", "absent"}) /*withe not possible*/ {
 			return fmt.Errorf("no valid value for %s tag", key.value)
 		}
 		if r.Tags == nil {
@@ -784,19 +786,6 @@ func (r *Rule) option(key item, l *lexer) error {
 			return err
 		}
 		dataPosition = d
-	case key.value == "absent":
-		absent := &Absent{}
-		absent.Enabled = true
-		absent.DataPosition = dataPosition
-		nextItem := l.nextItem()
-		if nextItem.typ == itemOptionValue {
-			if nextItem.value == "or_else" {
-				absent.Or_else = true
-			} else {
-				return fmt.Errorf("invalid absent %s", nextItem.value)
-			}
-		}
-		r.Absent = absent
 	case inSlice(key.value, []string{"content", "uricontent"}):
 		nextItem := l.nextItem()
 		negate := false
@@ -812,11 +801,6 @@ func (r *Rule) option(key item, l *lexer) error {
 			var options []*ContentOption
 			if key.value == "uricontent" {
 				options = append(options, &ContentOption{Name: "http_uri"})
-			}
-			if r.Absent != nil {
-				if !r.Absent.Or_else {
-					return fmt.Errorf("absent should have or_else if content existed")
-				}
 			}
 			con := &Content{
 				DataPosition: dataPosition,

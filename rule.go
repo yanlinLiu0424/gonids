@@ -64,8 +64,6 @@ type Rule struct {
 	// Matchers are internally used to ensure relative matches are printed correctly.
 	// Make this private before checkin?
 	Matchers []OrderedMatcher
-	//absent
-	Absent *Absent
 }
 
 type OrderedMatcher interface {
@@ -329,12 +327,6 @@ var stickyBuffers = map[DataPos]string{
 	icmpv6hdr: "icmpv6.hdr",
 }
 
-type Absent struct {
-	DataPosition DataPos
-	Enabled      bool
-	Or_else      bool
-}
-
 func (d DataPos) String() string {
 	return stickyBuffers[d]
 }
@@ -366,7 +358,6 @@ type Content struct {
 	Pattern []byte
 	// Negate is true for negated content match.
 	Negate bool
-	// absent
 	// Options are the option associated to the content (e.g. http_header).
 	Options []*ContentOption
 }
