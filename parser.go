@@ -686,10 +686,10 @@ func (r *Rule) option(key item, l *lexer) error {
 		"window",
 		"threshold", "detection_filter",
 		"dce_iface", "dce_opnum", "dce_stub_data",
-		"asn1", "tcp.flags", "absent"}):
+		"asn1", "tcp.flags"}):
 		nextItem := l.nextItem()
 
-		if nextItem.typ != itemOptionValue && !inSlice(key.value, []string{"tos", "fragbits", "tcp.flags", "window", "absent"}) /*withe not possible*/ {
+		if nextItem.typ != itemOptionValue && !inSlice(key.value, []string{"tos", "fragbits", "tcp.flags", "window"}) /*withe not possible*/ {
 			return fmt.Errorf("no valid value for %s tag", key.value)
 		}
 		if r.Tags == nil {
@@ -942,6 +942,22 @@ func (r *Rule) option(key item, l *lexer) error {
 		}
 		m.DataPosition = dataPosition
 		r.Matchers = append(r.Matchers, m)
+	case key.value == "absent":
+		if dataPosition == PayloadData {
+			return fmt.Errorf("absent must come first right after buffer")
+		}
+		or := false
+		nextItem := l.nextItem()
+		if nextItem.typ == itemOptionValue {
+			if nextItem.value == "or_else" {
+				or = true
+			} else {
+				return fmt.Errorf("error absent:%v", nextItem.value)
+			}
+		}
+		ab := Absent{DataPosition: dataPosition, Orelse: or}
+
+		r.Absent = ab
 	case key.value == "flowbits":
 		nextItem := l.nextItem()
 		fb, err := parseFlowbit(nextItem.value)

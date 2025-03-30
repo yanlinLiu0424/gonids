@@ -43,6 +43,7 @@ type Rule struct {
 	Revision int
 	// Description is the msg field of the rule.
 	Description string
+	Absent      Absent
 	// References contains references associated to the rule (e.g. CVE number).
 	References []*Reference
 	// Contents are all the decoded content matches.
@@ -360,6 +361,11 @@ type Content struct {
 	Negate bool
 	// Options are the option associated to the content (e.g. http_header).
 	Options []*ContentOption
+}
+
+type Absent struct {
+	DataPosition DataPos
+	Orelse       bool
 }
 
 // byteMatchType describes the kinds of byte matches and comparisons that are supported.
