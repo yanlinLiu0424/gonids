@@ -335,13 +335,13 @@ func parseByteMatch(k byteMatchType, s string) (*ByteMatch, error) {
 				if len(v) != 2 {
 					return nil, fmt.Errorf("incorrect format for rvalue")
 				}
-				b.Value = v[1]
+				b.Rvalue = v[1]
 			case strings.HasPrefix(v, "result"):
 				v := strings.Split(v, " ")
 				if len(v) != 2 {
 					return nil, fmt.Errorf("incorrect format for result")
 				}
-				b.Variable = v[1]
+				b.Result = v[1]
 
 			}
 		}

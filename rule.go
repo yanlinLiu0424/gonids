@@ -456,12 +456,16 @@ type ByteMatch struct {
 	Negate bool
 	// A variable name being extracted by byte_extract.
 	Variable string
+	// A result name being extracted by byte_math.
+	Result string
 	// Number of bytes to operate on. "bytes to convert" in Snort Manual. This can be an int, or a var from byte_extract.
 	NumBytes string
 	// Operator for comparison in byte_test.
 	Operator string
 	// Value to compare against using byte_test.
 	Value string
+	// Value to compare against using byte_math.
+	Rvalue string
 	// Offset within given buffer to operate on.
 	Offset int
 	// Other specifics required for jump/test here. This might make sense to pull out into a "ByteMatchOption" later.
