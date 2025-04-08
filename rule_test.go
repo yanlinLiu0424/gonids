@@ -709,6 +709,29 @@ func TestPCREString(t *testing.T) {
 	}
 }
 
+func TestRPCString(t *testing.T) {
+	for _, tt := range []struct {
+		name  string
+		input RPC
+		want  string
+	}{
+		{
+			name: "basic",
+			input: RPC{
+				Application: "123",
+				Version:     "456",
+				Procedure:   "*",
+			},
+			want: `rpc:123,456,*;`,
+		},
+	} {
+		got := tt.input.String()
+		if got != tt.want {
+			t.Fatalf("%s: got %v -- expected %v", tt.name, got, tt.want)
+		}
+	}
+}
+
 func TestFlowbitsString(t *testing.T) {
 	for _, tt := range []struct {
 		name  string
