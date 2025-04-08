@@ -43,7 +43,7 @@ type Rule struct {
 	Revision int
 	// Description is the msg field of the rule.
 	Description string
-	Absent      Absent
+	Absent      *Absent
 	// References contains references associated to the rule (e.g. CVE number).
 	References []*Reference
 	// Contents are all the decoded content matches.
@@ -548,6 +548,12 @@ type PCRE struct {
 	Options      []byte
 }
 
+type RPC struct {
+	Application string
+	Version     string
+	Procedure   string
+}
+
 // FastPattern describes various properties of a fast_pattern value for a content.
 type FastPattern struct {
 	Enabled bool
@@ -892,6 +898,14 @@ func (p PCRE) String() string {
 		s.WriteString("!")
 	}
 	s.WriteString(fmt.Sprintf(`"/%s/%s";`, pattern, p.Options))
+	return s.String()
+}
+
+// String returns a string for a PCRE.
+func (p RPC) String() string {
+	var s strings.Builder
+	s.WriteString("rpc:")
+	s.WriteString(fmt.Sprintf("%s,%s,%s;", p.Application, p.Version, p.Procedure))
 	return s.String()
 }
 

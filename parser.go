@@ -881,6 +881,17 @@ func (r *Rule) option(key item, l *lexer) error {
 		} else {
 			return fmt.Errorf("invalid type %q for option content", nextItem.typ)
 		}
+	case key.value == "rpc":
+		nextItem := l.nextItem()
+		if nextItem.typ != itemOptionValue {
+			return fmt.Errorf("invalid type %q for rpc", nextItem.typ)
+		}
+		s := strings.Split(nextItem.value, ",")
+		if len(s) != 3 {
+			return fmt.Errorf("invalid format of rpc: %v", nextItem.value)
+		}
+		rpc := &RPC{Application: s[0], Version: s[1], Procedure: s[2]}
+		r.Matchers = append(r.Matchers, rpc)
 	case inSlice(key.value, allbyteMatchTypeNames()):
 		k, err := byteMatcher(key.value)
 		if err != nil {
@@ -955,8 +966,7 @@ func (r *Rule) option(key item, l *lexer) error {
 				return fmt.Errorf("error absent:%v", nextItem.value)
 			}
 		}
-		ab := Absent{DataPosition: dataPosition, Orelse: or}
-
+		ab := &Absent{DataPosition: dataPosition, Orelse: or}
 		r.Absent = ab
 	case key.value == "flowbits":
 		nextItem := l.nextItem()
