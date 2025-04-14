@@ -779,6 +779,16 @@ func (r *Rule) option(key item, l *lexer) error {
 			return errors.New("no value for option msg")
 		}
 		r.Description = nextItem.value
+	case key.value == "replace":
+		nextItem := l.nextItem()
+		if nextItem.typ != itemOptionValueString {
+			return errors.New("no value for replace msg")
+		}
+		lastContent := r.LastContent()
+		if lastContent == nil {
+			return fmt.Errorf("invalid content option %q with no content match", key.value)
+		}
+		lastContent.Options = append(lastContent.Options, &ContentOption{Name: key.value, Value: nextItem.value})
 	case isStickyBuffer(key.value):
 		var d DataPos
 		var err error
