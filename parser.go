@@ -288,7 +288,7 @@ func parseByteMatch(k byteMatchType, s string) (*ByteMatch, error) {
 			offset, _ := strconv.Atoi(strings.TrimSpace(parts[3]))
 			b.Offset = offset
 		} else {
-			b.Options = append(b.Options, "offset:%v", parts[3])
+			b.Options = append(b.Options, fmt.Sprintf("offset %v", parts[3]))
 		}
 	}
 	if k == bMath {
