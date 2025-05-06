@@ -263,7 +263,8 @@ func TestParseByteMatch(t *testing.T) {
 			want: &ByteMatch{
 				Kind:     bExtract,
 				NumBytes: "3",
-				Variable: "Certs.len",
+				Offset:   0,
+				VarName:  "Certs.len",
 			},
 		},
 		{
@@ -273,7 +274,8 @@ func TestParseByteMatch(t *testing.T) {
 			want: &ByteMatch{
 				Kind:     bExtract,
 				NumBytes: "3",
-				Variable: "Certs.len",
+				Offset:   0,
+				VarName:  "Certs.len",
 				Options:  []string{"relative", "little"},
 			},
 		},
@@ -303,14 +305,13 @@ func TestParseByteMatch(t *testing.T) {
 			input: "2,=,0x01,0",
 			kind:  bTest,
 			want: &ByteMatch{
-				Kind:     bTest,
-				NumBytes: "2",
-				Operator: "=",
-				Offset:   0,
-				Value:    "0x01",
+				Kind:      bTest,
+				NumBytes:  "2",
+				Operator:  "=",
+				Offset:    0,
+				TestValue: "0x01",
 			},
 		},
-
 		{
 			name:  "basic byte_math",
 			input: "bytes 4, offset 0, oper +, rvalue 248, result var",
@@ -320,8 +321,8 @@ func TestParseByteMatch(t *testing.T) {
 				NumBytes: "4",
 				Operator: "+",
 				Offset:   0,
-				Value:    "248",
-				Variable: "var",
+				Rvalue:   "248",
+				Result:   "var",
 			},
 		},
 		{
@@ -333,8 +334,8 @@ func TestParseByteMatch(t *testing.T) {
 				NumBytes: "4",
 				Operator: "+",
 				Offset:   10,
-				Value:    "248",
-				Variable: "var",
+				Rvalue:   "248",
+				Result:   "var",
 				Options:  []string{"relative", "endian big", "dce"},
 			},
 		},
@@ -343,12 +344,12 @@ func TestParseByteMatch(t *testing.T) {
 			input: "4,=,1337,1,relative,string,dec",
 			kind:  bTest,
 			want: &ByteMatch{
-				Kind:     bTest,
-				NumBytes: "4",
-				Operator: "=",
-				Value:    "1337",
-				Offset:   1,
-				Options:  []string{"relative", "string", "dec"},
+				Kind:      bTest,
+				NumBytes:  "4",
+				Operator:  "=",
+				TestValue: "1337",
+				Offset:    1,
+				Options:   []string{"relative", "string", "dec"},
 			},
 		},
 		{
@@ -368,6 +369,37 @@ func TestParseByteMatch(t *testing.T) {
 				Kind:     isDataAt,
 				NumBytes: "4",
 				Options:  []string{"relative"},
+			},
+		},
+		{
+			name:  "entropy",
+			input: "7.01",
+			kind:  entropy,
+			want: &ByteMatch{
+				Kind:    entropy,
+				Entropy: 7.01,
+			},
+		},
+		{
+			name:  "entropy with oper",
+			input: "<7.01",
+			kind:  entropy,
+			want: &ByteMatch{
+				Kind:     entropy,
+				Operator: "<",
+				Entropy:  7.01,
+			},
+		},
+		{
+			name:  "entropy with options",
+			input: "bytes 0, offset 0,  value = 4.037",
+			kind:  entropy,
+			want: &ByteMatch{
+				Kind:     entropy,
+				Operator: "=",
+				Entropy:  4.037,
+				NumBytes: "0",
+				Offset:   0,
 			},
 		},
 	} {
@@ -1485,7 +1517,7 @@ func TestParseRule(t *testing.T) {
 					&ByteMatch{
 						Kind:     bExtract,
 						NumBytes: "3",
-						Variable: "Certs.len",
+						VarName:  "Certs.len",
 						Options:  []string{"relative", "little"},
 					},
 					&Content{
@@ -1520,12 +1552,12 @@ func TestParseRule(t *testing.T) {
 						Pattern: []byte{0xff, 0xfe},
 					},
 					&ByteMatch{
-						Kind:     bTest,
-						NumBytes: "5",
-						Operator: "<",
-						Value:    "65537",
-						Offset:   0,
-						Options:  []string{"relative", "string"},
+						Kind:      bTest,
+						NumBytes:  "5",
+						Operator:  "<",
+						TestValue: "65537",
+						Offset:    0,
+						Options:   []string{"relative", "string"},
 					},
 				},
 			},
@@ -2453,7 +2485,7 @@ func TestValidNetworks(t *testing.T) {
 }
 
 func Test(t *testing.T) {
-	v := `alert tcp any any -> [192.168.1.100,192.168.1.101] any (msg:"C2 server communication detected";content:"big"; offset:2;replace:"123";sid:1;)`
+	v := `alert tcp any any -> [192.168.1.100,192.168.1.101] any (msg:"C2 server communication detected";content:"big";entropy:<7.01;sid:1;)`
 	r, err := ParseRule(v)
 	if err != nil {
 		t.Fatal(err)

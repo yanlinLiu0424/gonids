@@ -27,6 +27,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 // hexRE matches on hexadecimal content like |41 41 41| for example.
@@ -268,41 +269,26 @@ func parseByteMatch(k byteMatchType, s string) (*ByteMatch, error) {
 	if len(parts) < 1 {
 		return nil, fmt.Errorf("%s keyword has %d parts", s, len(parts))
 	}
-	if k != bMath {
-		b.NumBytes = strings.TrimSpace(parts[0])
-	}
+
 	if len(parts) < b.Kind.minLen() {
 		return nil, fmt.Errorf("invalid %s length: %d", b.Kind, len(parts))
 	}
-
-	if k == bExtract || k == bJump {
-		// Parse offset.
-		offset, err := strconv.Atoi(strings.TrimSpace(parts[1]))
-		if err != nil {
-			return nil, fmt.Errorf("%s offset is not an int: %v; %s", b.Kind, parts[1], err)
-		}
-		b.Offset = offset
-	}
-
-	if k == bExtract {
-		// Parse variable name.
-		name := parts[2]
-		b.Variable = name
+	if k == isDataAt {
+		b.NumBytes = strings.TrimSpace(parts[0])
 	}
 
 	if k == bTest {
 		// Parse operator.
+		b.NumBytes = strings.TrimSpace(parts[0])
 		b.Operator = strings.TrimSpace(parts[1])
 		// Parse value. Can use a variable.
-		b.Value = strings.TrimSpace(parts[2])
+		b.TestValue = strings.TrimSpace(parts[2])
 		// Parse offset.
-		/*offset, err := strconv.Atoi(strings.TrimSpace(parts[3]))
+		offset, err := strconv.Atoi(strings.TrimSpace(parts[3]))
 		if err != nil {
 			return nil, fmt.Errorf("%s offset is not an int: %v; %s", b.Kind, parts[1], err)
 		}
-		b.Offset = offset*/
-		b.Options = append(b.Options, fmt.Sprintf("offset %v", parts[3]))
-
+		b.Offset = offset
 	}
 	if k == bMath {
 		for _, v := range parts {
@@ -342,10 +328,74 @@ func parseByteMatch(k byteMatchType, s string) (*ByteMatch, error) {
 					return nil, fmt.Errorf("incorrect format for result")
 				}
 				b.Result = v[1]
-
 			}
 		}
 
+	}
+
+	if k == bExtract || k == bJump {
+		// Parse offset.
+		b.NumBytes = strings.TrimSpace(parts[0])
+		offset, err := strconv.Atoi(strings.TrimSpace(parts[1]))
+		if err != nil {
+			return nil, fmt.Errorf("%s offset is not an int: %v; %s", b.Kind, parts[1], err)
+		}
+		b.Offset = offset
+	}
+
+	if k == bExtract {
+		// Parse variable name.
+		name := parts[2]
+		b.VarName = name
+	}
+
+	if k == entropy {
+		for _, v := range parts {
+			v = strings.TrimSpace(v)
+			switch {
+			case strings.HasPrefix(v, "bytes"):
+				v := strings.Fields(v)
+				if len(v) != 2 {
+					return nil, fmt.Errorf("incorrect format for oper")
+				}
+				b.NumBytes = v[1]
+			case strings.HasPrefix(v, "offset"):
+				v := strings.Fields(v)
+				if len(v) != 2 {
+					return nil, fmt.Errorf("incorrect format for oper")
+				}
+				offset, err := strconv.Atoi(strings.TrimSpace(v[1]))
+				if err != nil {
+					return nil, fmt.Errorf("%s offset is not an int: %v; %s", b.Kind, v[1], err)
+				}
+				b.Offset = offset
+			case strings.HasPrefix(v, "value"):
+				v := strings.Fields(v)
+				if len(v) != 3 {
+					return nil, fmt.Errorf("incorrect format,should be value <operator><entropy-value>")
+				}
+				b.Operator = v[1]
+				f, err := strconv.ParseFloat(v[2], 64)
+				if err != nil {
+					return nil, err
+				}
+				b.Entropy = f
+			default:
+				if !unicode.IsDigit(rune(v[0])) {
+					b.Operator = string(v[0])
+					v = v[1:]
+				}
+				f, err := strconv.ParseFloat(v, 64)
+				if err != nil {
+					return nil, err
+				}
+				b.Entropy = f
+			}
+		}
+	}
+
+	if b.Kind == entropy {
+		return b, nil
 	}
 	// The rest of the options, for all types not b64decode
 	for i, l := b.Kind.minLen(), len(parts); i < l; i++ {

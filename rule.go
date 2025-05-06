@@ -379,6 +379,7 @@ const (
 	isDataAt
 	b64Decode
 	bMath
+	entropy
 )
 
 var byteMatchTypeVals = map[byteMatchType]string{
@@ -388,6 +389,7 @@ var byteMatchTypeVals = map[byteMatchType]string{
 	isDataAt:  "isdataat",
 	b64Decode: "base64_decode",
 	bMath:     "byte_math",
+	entropy:   "entropy",
 }
 
 // allbyteMatchTypeNames returns a slice of valid byte_* keywords.
@@ -435,7 +437,7 @@ func (b byteMatchType) minLen() int {
 		return 2
 	case bTest:
 		return 4
-	case isDataAt:
+	case isDataAt, entropy:
 		return 1
 	case b64Decode:
 		return 0
@@ -455,7 +457,7 @@ type ByteMatch struct {
 	// Negate indicates negation of a value, currently only used for isdataat.
 	Negate bool
 	// A variable name being extracted by byte_extract.
-	Variable string
+	VarName string
 	// A result name being extracted by byte_math.
 	Result string
 	// Number of bytes to operate on. "bytes to convert" in Snort Manual. This can be an int, or a var from byte_extract.
@@ -463,11 +465,13 @@ type ByteMatch struct {
 	// Operator for comparison in byte_test.
 	Operator string
 	// Value to compare against using byte_test.
-	Value string
+	TestValue string
 	// Value to compare against using byte_math.
 	Rvalue string
 	// Offset within given buffer to operate on.
 	Offset int
+	//entropy
+	Entropy float64
 	// Other specifics required for jump/test here. This might make sense to pull out into a "ByteMatchOption" later.
 	Options []string
 }
@@ -804,11 +808,11 @@ func (b ByteMatch) String() string {
 
 	switch b.Kind {
 	case bExtract:
-		s.WriteString(fmt.Sprintf("%s,%d,%s", b.NumBytes, b.Offset, b.Variable))
+		s.WriteString(fmt.Sprintf("%s,%d,%s", b.NumBytes, b.Offset, b.VarName))
 	case bJump:
 		s.WriteString(fmt.Sprintf("%s,%d", b.NumBytes, b.Offset))
 	case bTest:
-		s.WriteString(fmt.Sprintf("%s,%s,%s,%d", b.NumBytes, b.Operator, b.Value, b.Offset))
+		s.WriteString(fmt.Sprintf("%s,%s,%s,%d", b.NumBytes, b.Operator, b.TestValue, b.Offset))
 	case isDataAt:
 		if b.Negate {
 			s.WriteString("!")
@@ -1100,7 +1104,7 @@ func (r *Rule) InsertMatcher(m OrderedMatcher, pos int) error {
 func (r *Rule) HasVar(s string) bool {
 	for _, m := range r.Matchers {
 		if b, ok := m.(*ByteMatch); ok {
-			if b.Variable == s {
+			if b.VarName == s {
 				return true
 			}
 		}

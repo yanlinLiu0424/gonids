@@ -379,11 +379,11 @@ func TestByteMatchString(t *testing.T) {
 		{
 			name: "byte_test basic",
 			input: ByteMatch{
-				Kind:     bTest,
-				NumBytes: "3",
-				Operator: ">",
-				Value:    "300",
-				Offset:   42,
+				Kind:      bTest,
+				NumBytes:  "3",
+				Operator:  ">",
+				TestValue: "300",
+				Offset:    42,
 			},
 			want: `byte_test:3,>,300,42;`,
 		},
@@ -402,19 +402,19 @@ func TestByteMatchString(t *testing.T) {
 				Kind:     bExtract,
 				NumBytes: "3",
 				Offset:   42,
-				Variable: "foobar",
+				VarName:  "foobar",
 			},
 			want: `byte_extract:3,42,foobar;`,
 		},
 		{
 			name: "byte_test options",
 			input: ByteMatch{
-				Kind:     bTest,
-				NumBytes: "3",
-				Operator: ">",
-				Value:    "300",
-				Offset:   42,
-				Options:  []string{"string", "dec"},
+				Kind:      bTest,
+				NumBytes:  "3",
+				Operator:  ">",
+				TestValue: "300",
+				Offset:    42,
+				Options:   []string{"string", "dec"},
 			},
 			want: `byte_test:3,>,300,42,string,dec;`,
 		},
@@ -434,7 +434,7 @@ func TestByteMatchString(t *testing.T) {
 				Kind:     bExtract,
 				NumBytes: "3",
 				Offset:   42,
-				Variable: "foobar",
+				VarName:  "foobar",
 				Options:  []string{"relative", "bitmask 0x03ff"},
 			},
 			want: `byte_extract:3,42,foobar,relative,bitmask 0x03ff;`,
@@ -1318,7 +1318,7 @@ func TestHasVar(t *testing.T) {
 			r: &Rule{
 				Matchers: []OrderedMatcher{
 					&ByteMatch{
-						Variable: "foovar",
+						VarName: "foovar",
 					},
 				},
 			},
@@ -1330,7 +1330,7 @@ func TestHasVar(t *testing.T) {
 			r: &Rule{
 				Matchers: []OrderedMatcher{
 					&ByteMatch{
-						Variable: "barvar",
+						VarName: "barvar",
 					},
 				},
 			},
