@@ -284,11 +284,12 @@ func parseByteMatch(k byteMatchType, s string) (*ByteMatch, error) {
 		// Parse value. Can use a variable.
 		b.TestValue = strings.TrimSpace(parts[2])
 		// Parse offset.
-		offset, err := strconv.Atoi(strings.TrimSpace(parts[3]))
-		if err != nil {
-			return nil, fmt.Errorf("%s offset is not an int: %v; %s", b.Kind, parts[1], err)
+		if isInteger(parts[3]) {
+			offset, _ := strconv.Atoi(strings.TrimSpace(parts[3]))
+			b.Offset = offset
+		} else {
+			b.Options = append(b.Options, "offset:%v", parts[3])
 		}
-		b.Offset = offset
 	}
 	if k == bMath {
 		for _, v := range parts {
@@ -1133,4 +1134,9 @@ func parseRuleAux(rule string, commented bool) (*Rule, error) {
 // ParseRule parses an IDS rule and returns a struct describing the rule.
 func ParseRule(rule string) (*Rule, error) {
 	return parseRuleAux(rule, false)
+}
+
+func isInteger(s string) bool {
+	_, err := strconv.Atoi(s)
+	return err == nil
 }
