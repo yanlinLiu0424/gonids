@@ -988,10 +988,12 @@ func (r *Rule) option(key item, l *lexer) error {
 			if err != nil {
 				return fmt.Errorf("could not parse byteMatch: %v", err)
 			}
-			if _, err := strconv.Atoi(b.NumBytes); err != nil {
-				// NumBytes is not an int, check if it is a variable from byte_extract.
-				if !r.HasVar(b.NumBytes) {
-					return fmt.Errorf("number of bytes is not an int, or an extracted variable: %s; %s", b.NumBytes, err)
+			if len(b.NumBytes) != 0 {
+				if _, err := strconv.Atoi(b.NumBytes); err != nil {
+					// NumBytes is not an int, check if it is a variable from byte_extract.
+					if !r.HasVar(b.NumBytes) {
+						return fmt.Errorf("number of bytes is not an int, or an extracted variable: %s; %s", b.NumBytes, err)
+					}
 				}
 			}
 		}
