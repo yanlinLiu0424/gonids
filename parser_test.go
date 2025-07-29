@@ -2485,7 +2485,7 @@ func TestValidNetworks(t *testing.T) {
 }
 
 func Test(t *testing.T) {
-	v := `alert tcp any any -> [192.168.1.100,192.168.1.101] any (msg:"C2 server communication detected";content:"big";entropy:<7.01;sid:1;)`
+	v := `alert tcp any any -> [192.168.1.100,192.168.1.101] any (msg:"C2 server communication detected";http_host;content:"big";entropy:<7.01;sid:1;)`
 	r, err := ParseRule(v)
 	if err != nil {
 		t.Fatal(err)
