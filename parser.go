@@ -998,7 +998,7 @@ func (r *Rule) option(key item, l *lexer) error {
 			}
 		}
 		b.Negate = negate
-
+		b.DataPosition = dataPosition
 		r.Matchers = append(r.Matchers, b)
 	case inSlice(key.value, allLenMatchTypeNames()):
 		k, err := lenMatcher(key.value)
